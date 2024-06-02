@@ -66,8 +66,8 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Sta
             City = "Warsaw",
             Street = "Długa"
         };
-        var json = JsonConvert.SerializeObject(model);
-        var httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+
+        var httpContent = model.ToJsonHttpContent();
 
         // act
         HttpResponseMessage response = await _client.PostAsync("/api/restaurant", httpContent);
@@ -75,6 +75,24 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Sta
         // assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
         response.Headers.Location.Should().NotBeNull();
+    }
 
+    [Fact]
+    public async void CreateRestaurant_WithInvalidModel_ReturnsBadRequest()
+    {
+        // Given
+        var model = new CreateRestaurantDto()
+        {
+            ContactEmail = "asd@spsd.pl",
+            Description = "opsi",
+            ContactNumber = "888-888-123"
+        };
+
+        var httpContent = model.ToJsonHttpContent();
+        
+        // When
+        HttpResponseMessage response = await _client.PostAsync("/api/restaurant", httpContent);
+        // Then
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
     }
 }
