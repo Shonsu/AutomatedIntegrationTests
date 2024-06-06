@@ -19,7 +19,6 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Startu
         {
             ServiceDescriptor? dbContextOptions = services.SingleOrDefault(services => services.ServiceType == typeof(DbContextOptions<RestaurantDbContext>));
             services.Remove(dbContextOptions);
-            //services.Replace(ServiceDescriptor.Scoped(typeof(IAccountService), _ => accountServiceMock.Object));
             services.AddSingleton<IAccountService>(accountServiceMock.Object);
             services.AddDbContext<RestaurantDbContext>(options => options.UseInMemoryDatabase("RestaurantDBIntegration"));
         })).CreateClient();

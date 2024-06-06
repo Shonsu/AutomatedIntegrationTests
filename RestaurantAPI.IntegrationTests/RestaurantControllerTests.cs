@@ -1,14 +1,10 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-using Azure;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Models;
-
+// 
 namespace RestaurantAPI.IntegrationTests;
 
 public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Startup>>
@@ -149,9 +145,9 @@ public class RestaurantControllerTests : IClassFixture<WebApplicationFactory<Sta
 
     private async Task SeedRestaurant(Restaurant restaurant)
     {
-        IServiceScopeFactory? scopeFactory = _factory.Services.GetService<IServiceScopeFactory>();
+        IServiceScopeFactory? scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
         using IServiceScope scope = scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetService<RestaurantDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
         await dbContext.Restaurants.AddAsync(restaurant);
         await dbContext.SaveChangesAsync();
 
